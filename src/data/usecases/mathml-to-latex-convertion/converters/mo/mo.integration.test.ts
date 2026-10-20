@@ -90,4 +90,16 @@ describe('mo (integration)', () => {
   ])('converts $name', ({ mathml, latex }) => {
     expect(MathMLToLaTeX.convert(mathml)).toBe(latex);
   });
+
+  it.each([
+    { name: 'a thin space', space: '&#x2009;', latex: 'a \\, b' },
+    { name: 'a hair space', space: '&#x200A;', latex: 'a \\, b' },
+    { name: 'a narrow no-break space', space: '&#x202F;', latex: 'a \\, b' },
+    { name: 'a medium mathematical space', space: '&#x205F;', latex: 'a \\: b' },
+    { name: 'a no-break space', space: '&#xA0;', latex: 'a ~ b' },
+    { name: 'an en space', space: '&#x2002;', latex: 'a \\enspace b' },
+    { name: 'an em space', space: '&#x2003;', latex: 'a \\quad b' },
+  ])('keeps $name operator as LaTeX spacing', ({ space, latex }) => {
+    expect(MathMLToLaTeX.convert(`<math><mi>a</mi><mo>${space}</mo><mi>b</mi></math>`)).toBe(latex);
+  });
 });

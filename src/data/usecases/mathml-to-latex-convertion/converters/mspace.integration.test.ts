@@ -20,6 +20,24 @@ describe('mspace (integration)', () => {
     </math>`,
       latex: 'a b',
     },
+    {
+      name: 'should convert mspace with a thin space width to a thin space',
+      mathml: `<math xmlns="http://www.w3.org/1998/Math/MathML">
+      <mn>10</mn>
+      <mspace width="0.167em"/>
+      <mi>m</mi>
+    </math>`,
+      latex: '10 \\, m',
+    },
+    {
+      name: 'should convert mspace with an em width to a quad',
+      mathml: `<math xmlns="http://www.w3.org/1998/Math/MathML">
+      <mi>a</mi>
+      <mspace width="1em"/>
+      <mi>b</mi>
+    </math>`,
+      latex: 'a \\quad b',
+    },
   ])('$name', ({ mathml, latex }) => {
     expect(MathMLToLaTeX.convert(mathml)).toBe(latex);
   });
