@@ -85,9 +85,9 @@ describe('#convert security and robustness', () => {
       expect(result).not.toContain('[native code]');
     });
 
-    it.each(prototypeKeys)('converts <mi>%s</mi> to its literal text', (token) => {
+    it.each(prototypeKeys)('converts <mi>%s</mi> to its literal text, upright', (token) => {
       expect(() => MathMLToLaTeX.convert(`<math><mi>${token}</mi></math>`)).not.toThrow();
-      expect(MathMLToLaTeX.convert(`<math><mi>${token}</mi></math>`)).toBe(token);
+      expect(MathMLToLaTeX.convert(`<math><mi>${token}</mi></math>`)).toBe(`\\mathrm{${token}}`);
     });
   });
 

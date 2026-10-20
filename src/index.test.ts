@@ -126,7 +126,7 @@ describe('#convert', () => {
       {
         name: 'function application (U+2061)',
         mathml: '<math><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></math>',
-        expected: 'sin x',
+        expected: '\\sin x',
       },
       {
         name: 'function application before fences',

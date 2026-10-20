@@ -20,4 +20,19 @@ describe('MI', () => {
   it('ignores an unknown mathvariant', () => {
     expect(new MI(mi('x', { mathvariant: 'nonsense' })).convert()).toBe('x');
   });
+
+  it.each([
+    ['without a mathvariant', {}],
+    ['with the normal mathvariant', { mathvariant: 'normal' }],
+  ])('renders a multi-character identifier upright %s', (_name, attributes) => {
+    expect(new MI(mi('cm', attributes)).convert()).toBe('\\mathrm{cm}');
+  });
+
+  it('renders a multi-character identifier naming a LaTeX operator as its command', () => {
+    expect(new MI(mi('sin')).convert()).toBe('\\sin');
+  });
+
+  it('keeps an explicit mathvariant on a multi-character identifier', () => {
+    expect(new MI(mi('ab', { mathvariant: 'italic' })).convert()).toBe('\\mathit{ab}');
+  });
 });

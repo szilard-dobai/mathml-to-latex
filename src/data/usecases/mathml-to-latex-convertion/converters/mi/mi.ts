@@ -4,15 +4,18 @@ import { normalizeWhiteSpaces } from '../../../../helpers';
 import { UTF8ToLtXConverter } from 'data/protocols';
 import { HashUTF8ToLtXConverter } from '../../../../../syntax/utf8-converter';
 import { Character } from './character';
+import { UprightIdentifier } from './upright-identifier';
 
 /**
  * Converts a MathML `<mi>` (identifier) element into LaTeX.
  *
  * Maps known math symbols/glyphs to their LaTeX commands (falling back to UTF-8
  * conversion), then wraps the result according to the `mathvariant` attribute.
+ * An identifier of more than one character defaults to upright, as in MathML.
  *
  * @example
  * // <mi mathvariant="bold">x</mi> -> \mathbf{x}
+ * // <mi>sin</mi> -> \sin
  */
 export class MI implements ToLaTeXConverter {
   private readonly _mathmlElement: MathMLElement;
@@ -36,7 +39,19 @@ export class MI implements ToLaTeXConverter {
     const parsedChar = this.utf8Converter.convert(convertedChar);
     if (parsedChar !== convertedChar) return parsedChar;
 
-    return this.wrapInMathVariant(convertedChar, this.getMathVariant(this._mathmlElement.attributes));
+    const mathVariant = this.getMathVariant(this._mathmlElement.attributes);
+    if (this.isUpright(trimmedValue, mathVariant)) return UprightIdentifier.apply(convertedChar);
+
+    return this.wrapInMathVariant(convertedChar, mathVariant);
+  }
+
+  /**
+   * MathML renders an identifier of more than one character with the `normal`
+   * (upright) variant unless told otherwise, unlike a single character, which
+   * defaults to italic.
+   */
+  private isUpright(value: string, mathVariant: string | undefined): boolean {
+    return [...value].length > 1 && (mathVariant === undefined || mathVariant === 'normal');
   }
 
   /** Extracts the `mathvariant` attribute value, or undefined when absent. */

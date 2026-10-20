@@ -71,4 +71,39 @@ describe('mi (integration)', () => {
   ])('converts $name to its LaTeX command', ({ mathml, latex }) => {
     expect(MathMLToLaTeX.convert(mathml)).toBe(latex);
   });
+
+  it.each([
+    {
+      name: 'a word between quantities',
+      mathml: '<math><mn>6</mn><mo>%</mo><mi>of</mi><mn>500</mn></math>',
+      latex: '6 \\% \\mathrm{of} 500',
+    },
+    {
+      name: 'a unit',
+      mathml: '<math><mn>5</mn><mi>cm</mi></math>',
+      latex: '5 \\mathrm{cm}',
+    },
+    {
+      name: 'a unit with the normal mathvariant',
+      mathml: '<math><mn>5</mn><mi mathvariant="normal">cm</mi></math>',
+      latex: '5 \\mathrm{cm}',
+    },
+    {
+      name: 'a function applied to an argument',
+      mathml: '<math><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></math>',
+      latex: '\\sin x',
+    },
+    {
+      name: 'a function raised to a power',
+      mathml: '<math><msup><mi>log</mi><mn>2</mn></msup><mi>x</mi></math>',
+      latex: '\\log^{2} x',
+    },
+    {
+      name: 'a multi-character identifier with an explicit italic mathvariant',
+      mathml: '<math><mi mathvariant="italic">ab</mi></math>',
+      latex: '\\mathit{ab}',
+    },
+  ])('renders $name upright', ({ mathml, latex }) => {
+    expect(MathMLToLaTeX.convert(mathml)).toBe(latex);
+  });
 });
